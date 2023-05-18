@@ -1,0 +1,104 @@
+<div class="card p-4">
+    <div class="row">
+        <h3 class="mb-3">Users</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th>Image</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email Address</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let user of this.userListDTO; let i = index">
+                    <tr>
+                        <th scope="row">{{i+1}}</th>
+                        <td><img class="image-table" [src]="user.imagePath"/></td>
+                        <td>{{user.firstName}}</td>
+                        <td>{{user.lastName}}</td>
+                        <td>{{user.email}}</td>
+                        <td>
+                            <button type="button" class="btn btn-success" (click)="editUser(user)"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn btn-danger" (click)="deletUser(user.id)"><i class="far fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-6 pt-3">
+            <h4 class="mb-4">User Form</h4>
+            <form [formGroup]="userFormGroup">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input formControlName="firstName" class="form-control" maxlength="32" placeholder="--"
+                                [ngClass]="{ 'is-invalid': userFormSubmitted && f.firstName.errors }">
+                            <div *ngIf="userFormSubmitted && f.firstName.errors" class="invalid-feedback">
+                                <div>First name is required</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input formControlName="lastName" class="form-control" maxlength="32" placeholder="--"
+                                [ngClass]="{ 'is-invalid': userFormSubmitted && f.lastName.errors }">
+                            <div *ngIf="userFormSubmitted && f.lastName.errors" class="invalid-feedback">
+                                <div>Last Name is required</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input formControlName="email" class="form-control" placeholder="--"
+                                [ngClass]="{ 'is-invalid': userFormSubmitted && f.email.errors }">
+                            <div *ngIf="userFormSubmitted && f.email.errors" class="invalid-feedback">
+                                <div *ngIf="f.email.errors.required">Email Address is required</div>
+                                <div *ngIf="f.email.errors.pattern">Not a valid email</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <ng-container *ngIf="this.userDTO.imagePath?.length > 0">
+                                <img [src]="this.userDTO.imagePath" />
+                            </ng-container>
+                            <label for="image-field-single">
+                                <input type="file" id="image-field-single" accept="image/*" formControlName="image"
+                                    (click)="InputImageSingle.value = null" (change)="UploadImage($event);"
+                                    #InputImageSingle />
+                                <div>Attach Image</div>
+                            </label>
+                            <div *ngIf="userFormSubmitted && !(this.userDTO.imagePath?.length > 0)" class="error-message">
+                                Image is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary" (click)="createUser()">
+                            <ng-container *ngIf="isEdit">Update User</ng-container>
+                            <ng-container *ngIf="!isEdit">Create User</ng-container>
+                        </button>
+                    </div>
+                    <div class="col-md-4" *ngIf="isSuccess || isEdit">
+                        <button type="submit" class="btn btn-secondary" (click)="clearForm()">Clear Form</button>
+                    </div>
+                    <div class="col-md-4" *ngIf="isSuccess">
+                        <h3>Successfull</h3>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
